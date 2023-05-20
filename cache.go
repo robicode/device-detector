@@ -51,3 +51,14 @@ var cacheFiles = []string{
 	"oss.yml",
 	"vendorfragments.yml",
 }
+
+func NewEmbeddedCache() (*Cache, error) {
+	deviceCache, err := NewEmbeddedDeviceCache()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Cache{
+		Device: deviceCache,
+	}, nil
+}

@@ -1,4 +1,4 @@
-package devicedetector
+package util
 
 import (
 	"testing"
@@ -34,8 +34,8 @@ func TestUtil_EGSub(t *testing.T) {
 }
 
 func TestUtil_FixupRegex(t *testing.T) {
-	if fixupRegex(`XYZZY`) != `(?:^|[^A-Z0-9\-_]|[^A-Z0-9\-]_|sprd-|MZ-)(?:XYZZY)` {
-		t.Errorf("expected BuildRegex() to include the passed in regex plus the base regex but got `%s`", fixupRegex(`XYZZY`))
+	if FixupRegex(`XYZZY`) != `(?:^|[^A-Z0-9\-_]|[^A-Z0-9\-]_|sprd-|MZ-)(?:XYZZY)` {
+		t.Errorf("expected BuildRegex() to include the passed in regex plus the base regex but got `%s`", FixupRegex(`XYZZY`))
 		t.Fail()
 		return
 	}

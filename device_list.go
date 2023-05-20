@@ -2,6 +2,7 @@ package devicedetector
 
 import (
 	"github.com/gijsbers/go-pcre"
+	"github.com/robicode/device-detector/util"
 )
 
 // A DeviceList holds a list of devices loaded from YAML files.
@@ -62,7 +63,7 @@ func (e *CachedDevice) FindModel(userAgent string) *CachedModel {
 
 	for _, model := range e.Models {
 		if !model.compiled && model.compileError == nil {
-			re, err := pcre.Compile(fixupRegex(model.Regex), pcre.CASELESS)
+			re, err := pcre.Compile(util.FixupRegex(model.Regex), pcre.CASELESS)
 			if err != nil {
 				model.compileError = err
 				continue

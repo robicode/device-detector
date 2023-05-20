@@ -4,6 +4,8 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+
+	"github.com/robicode/device-detector/util"
 )
 
 // CacheFileList is a helper struct used to pass a list of caches to search into
@@ -54,7 +56,7 @@ func (c *CacheFileList) Exclude(excludes ...string) *CacheFileList {
 	}
 
 	for _, exclude := range excludes {
-		if !inStrArray(exclude, c.originalList) {
+		if !util.InStrArray(exclude, c.originalList) {
 			return c
 		}
 	}
@@ -62,7 +64,7 @@ func (c *CacheFileList) Exclude(excludes ...string) *CacheFileList {
 	newList := []string{}
 
 	for _, file := range c.originalList {
-		if !inStrArray(file, excludes) {
+		if !util.InStrArray(file, excludes) {
 			newList = append(newList, file)
 		}
 	}
@@ -99,7 +101,7 @@ func (c *CacheFileList) Exclusive(filenames ...string) *CacheFileList {
 	newArr := []string{}
 
 	for _, file := range filenames {
-		if !inStrArray(file, c.originalList) {
+		if !util.InStrArray(file, c.originalList) {
 			return c
 		}
 		newArr = append(newArr, file)

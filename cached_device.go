@@ -14,11 +14,12 @@ type CachedModel struct {
 
 type CachedDevice struct {
 	Regex         string        `yaml:"regex"`
-	captures      []string      `yaml:"-"`
+	Captures      []string      `yaml:"-"`
 	compiledRegex pcre.Regexp   `yaml:"-"`
 	compileError  error         `yaml:"-"`
 	compiled      bool          `yaml:"-"`
 	Type          string        `yaml:"device"`
 	Name          string        `yaml:"model"`
 	Models        []CachedModel `yaml:"models"`
+	Brand         string        `yaml:"-"`
 }
