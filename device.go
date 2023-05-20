@@ -12,10 +12,7 @@ type Device struct {
 	cache *Cache
 
 	_device    *CachedDevice
-	_brand     string
 	_known     bool
-	_name      string
-	_type      string
 	_userAgent string
 }
 
@@ -1507,7 +1504,6 @@ func NewDevice(cache *Cache, userAgent string) *Device {
 		return device
 	} else {
 		device._known = true
-		device._brand = entry.Brand
 	}
 
 	device._device = entry
@@ -1528,7 +1524,18 @@ func (d *Device) Type() string {
 		return "tv"
 	}
 
-	return d._type
+	if d._device != nil {
+		return d._device.Type
+	}
+	return ""
+}
+
+// Brand returns the device brand
+func (d *Device) Brand() string {
+	if d._device != nil {
+		return d._device.Brand
+	}
+	return ""
 }
 
 func (d *Device) isHbbTV() bool {
@@ -1570,7 +1577,8 @@ func (d *Device) matchingRegex() *CachedDevice {
 				device.Brand = model.Brand
 			}
 			if strings.TrimSpace(model.Name) != "" {
-				device.Name = model.Name
+				name := modelextractor.New(d._userAgent, model.Regex, model.Name).Call()
+				device.Name = name
 			}
 			if strings.TrimSpace(model.Type) != "" {
 				device.Type = model.Type
