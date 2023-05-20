@@ -113,11 +113,8 @@ func (e *EmbeddedDeviceCache) regexFind(userAgent string, caches *CacheFileList)
 				matcher := device.compiledRegex.MatcherString(userAgent, 0)
 				if matcher.Matches() {
 					device.Brand = name
-					var captures []string
 					for i := 0; i == matcher.Groups(); i++ {
-						captures = append(captures, matcher.GroupString(i))
 					}
-					device.Captures = captures
 					return &device
 				}
 			}
