@@ -80,21 +80,25 @@ func (e *EmbeddedDeviceCache) Get(list string) *CachedDeviceList {
 }
 
 func (e *EmbeddedDeviceCache) RegexesForHbbTV() *CacheFileList {
-	return NewCacheFileList().Exclusive("regexes/device/televisions.yml")
+	return NewCacheFileList("regexes/device/televisions.yml")
 }
 
 func (e *EmbeddedDeviceCache) RegexesForShellTV() *CacheFileList {
-	return NewCacheFileList().Exclusive("regexes/device/shell_tv.yml")
+	return NewCacheFileList("regexes/device/shell_tv.yml")
 }
 
 func (e *EmbeddedDeviceCache) RegexesForOthers() *CacheFileList {
-	return NewCacheFileList().Exclude("regexes/device/televisions.yml")
+	return NewCacheFileList(deviceFilenames...).Exclude("regexes/device/televisions.yml")
 }
 
 func (e *EmbeddedDeviceCache) regexFind(userAgent string, caches *CacheFileList) *CachedDevice {
-	for listfile, d := range e.devices {
-		if !caches.Includes(listfile) {
-			continue
+	// Iterating over e.devices revealed a nasty ordering bug, so we instead iterate over our list
+	// of cache files to control the ordering.
+	for _, listfile := range caches.filenames {
+		d, ok := e.devices[listfile]
+		if !ok {
+			log.Println("can't find device list", listfile, "bailing out!")
+			return nil
 		}
 
 		for name, device := range d.list {

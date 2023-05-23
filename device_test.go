@@ -175,15 +175,15 @@ func TestDevice_Type(t *testing.T) {
 		device := NewDevice(cache, test.UserAgent)
 
 		if device.Name() != test.ExpectedName {
-			t.Errorf("test '%s': expected Name() to return '%s' but returned '%s' instead", test.Description, test.ExpectedName, device.Name())
+			t.Errorf("test '%s': expected Name() to return '%s' but returned '%s'.\n", test.Description, test.ExpectedName, device.Name())
 		}
 
 		if device.Brand() != test.ExpectedBrand {
-			t.Errorf("test '%s': expected Brand() to return '%s' but returned '%s' instead", test.Description, test.ExpectedBrand, device.Brand())
+			t.Errorf("test '%s': expected Brand() to return '%s' but returned '%s'.", test.Description, test.ExpectedBrand, device.Brand())
 		}
 
 		if device.Type() != test.ExpectedType {
-			t.Errorf("test '%s': expected Type() to return '%s' but returned '%s' instead", test.Description, test.ExpectedType, device.Type())
+			t.Errorf("test '%s': expected Type() to return '%s' but returned '%s'.\n", test.Description, test.ExpectedType, device.Type())
 		}
 	}
 }

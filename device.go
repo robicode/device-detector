@@ -12,6 +12,7 @@ type Device struct {
 	cache *Cache
 
 	_device    *CachedDevice
+	_model     *CachedModel
 	_known     bool
 	_userAgent string
 }
@@ -1495,6 +1496,7 @@ var deviceBrands = map[string]string{
 func NewDevice(cache *Cache, userAgent string) *Device {
 	device := &Device{
 		cache:      cache,
+		_device:    nil,
 		_userAgent: userAgent,
 	}
 
@@ -1564,7 +1566,6 @@ func (d *Device) matchingRegex() *CachedDevice {
 		return nil
 	}
 
-	// device := regexList.regexFind(d._userAgent)
 	device := d.cache.Device.regexFind(d._userAgent, regexList)
 	if device == nil {
 		return nil
@@ -1573,6 +1574,7 @@ func (d *Device) matchingRegex() *CachedDevice {
 	if len(device.Models) > 0 {
 		model := device.FindModel(d._userAgent)
 		if model != nil {
+			d._model = model
 			if strings.TrimSpace(model.Brand) != "" {
 				device.Brand = model.Brand
 			}
