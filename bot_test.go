@@ -1,6 +1,7 @@
 package devicedetector
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -48,10 +49,19 @@ func TestBotWithFixtures(t *testing.T) {
 		return
 	}
 
+	var errors int
+
 	for _, fixture := range botFixtures {
 		bot := NewBot(cache, fixture.UserAgent)
 		if !bot.IsBot() {
 			t.Errorf("expected bot '%s' to be a bot", bot.Name())
+			errors += 1
 		}
+	}
+
+	if errors != 0 {
+		fmt.Println("    :: Tested", len(botFixtures), "bots with", errors, "errors")
+	} else {
+		fmt.Println("    :: Tested", len(botFixtures), "bots.")
 	}
 }
