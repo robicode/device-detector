@@ -23,9 +23,10 @@ func InStrArray(s string, arr []string) bool {
 	return false
 }
 
+// EGSub - Enumerated GSub
 // EGSub is like the enumerated form of Ruby's String#gsub. It takes as parameters
 // the original string, the regexp to match against, and a function to be called for
-// each match. Simplified version with replacer variants removed.
+// each time the pattern is matched.
 func EGSub(orig string, matcher pcre.Regexp, replacer interface{}) string {
 	var i int
 

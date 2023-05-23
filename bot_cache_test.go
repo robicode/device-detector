@@ -1,6 +1,8 @@
 package devicedetector
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_NewEmbeddedBotCache(t *testing.T) {
 	cache, err := NewEmbeddedBotCache()

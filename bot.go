@@ -19,3 +19,22 @@ func NewBot(cache *Cache, userAgent string) *Bot {
 		_userAgent: userAgent,
 	}
 }
+
+// IsBot returns true if the userAgent given to NewBot represents a bot.
+func (b *Bot) IsBot() bool {
+	return b._bot != nil
+}
+
+func (b *Bot) Name() string {
+	if b._bot != nil {
+		return b._bot.Name
+	}
+	return ""
+}
+
+func (b *Bot) Category() string {
+	if b._bot != nil {
+		return b._bot.Category
+	}
+	return ""
+}
