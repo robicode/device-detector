@@ -1,7 +1,6 @@
 package devicedetector
 
 import (
-	"fmt"
 	"io/ioutil"
 	"testing"
 
@@ -35,7 +34,7 @@ func TestBotWithFixtures(t *testing.T) {
 		return
 	}
 
-	data, err := ioutil.ReadFile("fixtures/detector/bots.yml")
+	data, err := ioutil.ReadFile("fixtures/bots.yml")
 	if err != nil {
 		t.Error("error loading bot fixtures:", err)
 		t.Fail()
@@ -49,19 +48,14 @@ func TestBotWithFixtures(t *testing.T) {
 		return
 	}
 
-	var errors int
-
 	for _, fixture := range botFixtures {
 		bot := NewBot(cache, fixture.UserAgent)
 		if !bot.IsBot() {
 			t.Errorf("expected bot '%s' to be a bot", bot.Name())
-			errors += 1
 		}
-	}
 
-	if errors != 0 {
-		fmt.Println("    :: Tested", len(botFixtures), "bots with", errors, "errors")
-	} else {
-		fmt.Println("    :: Tested", len(botFixtures), "bots.")
+		if bot.Name() != fixture.Bot.Name {
+			t.Errorf("expected bot name to be '%s' but was '%s'", fixture.Bot.Name, bot.Name())
+		}
 	}
 }
