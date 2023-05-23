@@ -3,6 +3,7 @@ package devicedetector
 import "embed"
 
 type Cache struct {
+	Bot    BotCache
 	Device DeviceCache
 }
 
@@ -53,12 +54,18 @@ var cacheFiles = []string{
 }
 
 func NewEmbeddedCache() (*Cache, error) {
+	botCache, err := NewEmbeddedBotCache()
+	if err != nil {
+		return nil, err
+	}
+
 	deviceCache, err := NewEmbeddedDeviceCache()
 	if err != nil {
 		return nil, err
 	}
 
 	return &Cache{
+		Bot:    botCache,
 		Device: deviceCache,
 	}, nil
 }
