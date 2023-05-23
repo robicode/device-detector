@@ -13,7 +13,6 @@ type Device struct {
 
 	_device    *CachedDevice
 	_model     *CachedModel
-	_known     bool
 	_userAgent string
 }
 
@@ -1502,10 +1501,7 @@ func NewDevice(cache *Cache, userAgent string) *Device {
 
 	entry := device.matchingRegex()
 	if entry == nil {
-		device._known = false
 		return device
-	} else {
-		device._known = true
 	}
 
 	device._device = entry
@@ -1591,4 +1587,8 @@ func (d *Device) matchingRegex() *CachedDevice {
 		device.Name = name
 	}
 	return device
+}
+
+func (d *Device) IsKnown() bool {
+	return d._device != nil
 }
