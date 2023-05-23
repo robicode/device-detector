@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gijsbers/go-pcre"
+	"github.com/robicode/device-detector/util"
 )
 
 type BotCache interface {
@@ -31,9 +32,11 @@ func NewEmbeddedBotCache() (*EmbeddedBotCache, error) {
 }
 
 func (b *EmbeddedBotCache) Find(userAgent string) *CachedBot {
+	var matches []CachedBot
+
 	for _, bot := range b.bots {
 		if !bot.compiled && bot.compileError == nil {
-			re, err := pcre.Compile(bot.Regex, pcre.CASELESS)
+			re, err := pcre.Compile(util.FixupRegex(bot.Regex), pcre.CASELESS)
 			if err != nil {
 				bot.compileError = err
 				log.Println(err)
@@ -46,9 +49,13 @@ func (b *EmbeddedBotCache) Find(userAgent string) *CachedBot {
 		if bot.compileError == nil {
 			matcher := bot.compiledRegex.MatcherString(userAgent, 0)
 			if matcher.Matches() {
-				return &bot
+				matches = append(matches, bot)
 			}
 		}
+	}
+
+	if len(matches) > 0 {
+		return &matches[len(matches)-1]
 	}
 	return nil
 }
