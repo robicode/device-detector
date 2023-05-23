@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	modelextractor "github.com/robicode/device-detector/model_extractor"
+	"github.com/robicode/device-detector/extractor"
 )
 
 type Device struct {
@@ -1579,7 +1579,7 @@ func (d *Device) matchingRegex() *CachedDevice {
 				device.Brand = model.Brand
 			}
 			if strings.TrimSpace(model.Name) != "" {
-				name := modelextractor.New(d._userAgent, model.Regex, model.Name).Call()
+				name := extractor.New(d._userAgent, model.Regex, model.Name).Call()
 				device.Name = name
 			}
 			if strings.TrimSpace(model.Type) != "" {
@@ -1587,7 +1587,7 @@ func (d *Device) matchingRegex() *CachedDevice {
 			}
 		}
 	} else {
-		name := modelextractor.New(d._userAgent, device.Regex, device.Name).Call()
+		name := extractor.New(d._userAgent, device.Regex, device.Name).Call()
 		device.Name = name
 	}
 	return device

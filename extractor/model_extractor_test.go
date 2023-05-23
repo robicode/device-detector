@@ -1,8 +1,8 @@
-package modelextractor
+package extractor
 
 import "testing"
 
-func TestModelExtractor_Call(t *testing.T) {
+func TestExtractor_Call(t *testing.T) {
 	// When no dynamic match is found
 	userAgent := "Mozilla/5.0 (iPhone; CPU iPhone OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4"
 	regex := `(?:Apple-)?iPhone ?(3GS?|4S?|5[CS]?|6(:? Plus)?)?`

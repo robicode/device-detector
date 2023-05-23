@@ -1,4 +1,4 @@
-package modelextractor
+package extractor
 
 import (
 	"strings"
@@ -7,21 +7,21 @@ import (
 	"github.com/robicode/device-detector/util"
 )
 
-type ModelExtractor struct {
+type Extractor struct {
 	_regex     string
 	_name      string
 	_userAgent string
 }
 
-func New(userAgent, regex, name string) *ModelExtractor {
-	return &ModelExtractor{
+func New(userAgent, regex, name string) *Extractor {
+	return &Extractor{
 		_userAgent: userAgent,
 		_name:      name,
 		_regex:     regex,
 	}
 }
 
-func (m *ModelExtractor) Call() string {
+func (m *Extractor) Call() string {
 	re, err := pcre.Compile(m._regex, pcre.CASELESS)
 	if err != nil {
 		return ""
