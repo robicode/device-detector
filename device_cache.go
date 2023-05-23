@@ -36,7 +36,7 @@ var deviceFilenames = []string{
 // tree is loaded from resources contained within the package/application binary.
 func NewEmbeddedDeviceCache() (*EmbeddedDeviceCache, error) {
 	files := NewCacheFileList(deviceFilenames...)
-	devices, err := parse(files)
+	devices, err := parseDevices(files)
 	if err != nil {
 		return nil, err
 	}
