@@ -5,6 +5,7 @@ import "embed"
 type Cache struct {
 	Bot    BotCache
 	Device DeviceCache
+	OS     OSCache
 }
 
 //go:embed regexes/bots.yml
@@ -64,8 +65,14 @@ func NewEmbeddedCache() (*Cache, error) {
 		return nil, err
 	}
 
+	osCache, err := NewEmbeddedOSCache()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Cache{
 		Bot:    botCache,
 		Device: deviceCache,
+		OS:     osCache,
 	}, nil
 }
