@@ -1,6 +1,9 @@
 package devicedetector
 
 import (
+	"io/ioutil"
+	"log"
+
 	"github.com/robicode/device-detector/util"
 	"gopkg.in/yaml.v3"
 )
@@ -93,4 +96,38 @@ func parseOSs(fileList *CacheFileList) ([]CachedOS, error) {
 		oss = append(oss, fnOSs...)
 	}
 	return oss, nil
+}
+
+func parseHintsFile(filename string) (map[string]string, error) {
+	output := make(map[string]string)
+
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(data, &output)
+	if err != nil {
+		return nil, err
+	}
+	return output, err
+}
+
+func parseHints(fileList *CacheFileList) (map[string]string, error) {
+	list := make(map[string]string)
+
+	for _, filename := range fileList.filenames {
+		m, err := parseHintsFile(filename)
+		if err != nil {
+			return nil, err
+		}
+		for name, item := range m {
+			if _, ok := list[name]; ok {
+				log.Println("Item already in list:", name)
+			} else {
+				list[name] = item
+			}
+		}
+	}
+	return list, nil
 }

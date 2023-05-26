@@ -6,7 +6,7 @@ import (
 
 	"github.com/robicode/device-detector/extractor"
 	"github.com/robicode/device-detector/util"
-	versionextractor "github.com/robicode/device-detector/version_extractor"
+	"github.com/robicode/device-detector/versionextractor"
 )
 
 type OS struct {

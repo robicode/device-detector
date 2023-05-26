@@ -5,6 +5,7 @@ import "embed"
 type Cache struct {
 	Bot    BotCache
 	Device DeviceCache
+	Hint   HintCache
 	OS     OSCache
 }
 
@@ -60,6 +61,11 @@ func NewEmbeddedCache() (*Cache, error) {
 		return nil, err
 	}
 
+	clientCache, err := NewEmbeddedHintCache()
+	if err != nil {
+		return nil, err
+	}
+
 	deviceCache, err := NewEmbeddedDeviceCache()
 	if err != nil {
 		return nil, err
@@ -73,6 +79,7 @@ func NewEmbeddedCache() (*Cache, error) {
 	return &Cache{
 		Bot:    botCache,
 		Device: deviceCache,
+		Hint:   clientCache,
 		OS:     osCache,
 	}, nil
 }
