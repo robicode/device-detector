@@ -6,6 +6,7 @@ import (
 
 	"github.com/robicode/device-detector/extractor"
 	"github.com/robicode/device-detector/util"
+	versionextractor "github.com/robicode/device-detector/version_extractor"
 )
 
 type OS struct {
@@ -149,6 +150,7 @@ var operatingSystems = map[string]string{
 	"WOS": "webOS",
 }
 
+// List of operating system families.
 var osFamilies = map[string][]string{
 	"Android": {"AND", "CYN", "FIR", "REM", "RZD", "MLD", "MCD", "YNS", "GRI", "HAR",
 		"ADR", "CLR", "BOS", "REV", "LEN", "SIR", "RRS"},
@@ -183,8 +185,10 @@ var osFamilies = map[string][]string{
 	"Other Smart TV":        {"WHS"},
 }
 
+// List of desktop operating systems.
 var desktopOSs = []string{"AmigaOS", "IBM", "GNU/Linux", "Mac", "Unix", "Windows", "BeOS", "Chrome OS"}
 
+// NewOS returns a new *OS and tries to detect the OS of the given userAgent.
 func NewOS(cache *Cache, userAgent string) *OS {
 	os := cache.OS.Find(userAgent)
 	if os == nil {
@@ -198,6 +202,7 @@ func NewOS(cache *Cache, userAgent string) *OS {
 	}
 }
 
+// Short returns the short code for the OS.
 func (o *OS) Short() string {
 	if o._os == nil {
 		return ""
@@ -211,6 +216,7 @@ func (o *OS) Short() string {
 	return "UNK"
 }
 
+// Name returns the full name of the OS.
 func (o *OS) Name() string {
 	if o._os == nil {
 		return ""
@@ -218,6 +224,12 @@ func (o *OS) Name() string {
 	return extractor.New(o._userAgent, o._os.Regex, o._os.Name).Call()
 }
 
+// ShortName is an alias for Short(); it returns the short code for the OS.
+func (o *OS) ShortName() string {
+	return o.Short()
+}
+
+// Family returns the OS family
 func (o *OS) Family() string {
 	return o.familyToOS()
 }
@@ -235,6 +247,25 @@ func (o *OS) familyToOS() string {
 	return ""
 }
 
+// IsDesktop returns a best guess whether this OS is primarily a desktop OS.
 func (o *OS) IsDesktop() bool {
 	return util.InStrArray(o.Family(), desktopOSs)
+}
+
+// FullVersion returns the full version string of the OS. Not implemented yet.
+func (o *OS) FullVersion() string {
+	if o._os == nil {
+		return ""
+	}
+	var versions []versionextractor.Version
+
+	for _, version := range o._os.Versions {
+		v := versionextractor.Version{
+			Regex:   version.Regex,
+			Version: version.Version,
+		}
+		versions = append(versions, v)
+	}
+
+	return versionextractor.New(o._userAgent, o._os.Regex, o._os.Version, versions).Call()
 }

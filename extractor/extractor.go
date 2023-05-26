@@ -1,6 +1,7 @@
 package extractor
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/gijsbers/go-pcre"
@@ -37,8 +38,15 @@ func (m *Extractor) Call() string {
 	}
 
 	re2 := pcre.MustCompile(`\$(\d)`, 0)
-	s := util.EGSub(m._name, re2, func(s string, i int) string {
-		return matcher.GroupString(1)
+	s := util.EGSub(m._name, re2, func(s string, i int, matches []string) string {
+		var m int = 1
+		if len(matches) > 1 {
+			x, err := strconv.Atoi(matches[1])
+			if err == nil {
+				m = x
+			}
+		}
+		return matcher.GroupString(m)
 	})
 	return strings.TrimSpace(s)
 }

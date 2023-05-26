@@ -27,7 +27,7 @@ func InStrArray(s string, arr []string) bool {
 // EGSub is like the enumerated form of Ruby's String#gsub. It takes as parameters
 // the original string, the regexp to match against, and a function to be called for
 // each time the pattern is matched.
-func EGSub(orig string, matcher pcre.Regexp, replacer interface{}) string {
+func EGSub(orig string, matcher pcre.Regexp, replacer func(string, int, []string) string) string {
 	var i int
 
 	if replacer == nil {
@@ -40,11 +40,23 @@ func EGSub(orig string, matcher pcre.Regexp, replacer interface{}) string {
 			break
 		}
 
+		var matches []string
+		if m.Groups() > 0 {
+			var j int = 0
+
+			for {
+				if j > m.Groups() {
+					break
+				}
+
+				matches = append(matches, m.GroupString(j))
+				j++
+			}
+		}
+
 		idx := m.Index()
 		replacement := orig[idx[0]:idx[1]]
-		if r, ok := replacer.(func(string, int) string); ok {
-			orig = strings.Replace(orig, replacement, r(replacement, i), 1)
-		}
+		orig = strings.Replace(orig, replacement, replacer(replacement, i, matches), 1)
 		i++
 	}
 

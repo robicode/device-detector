@@ -7,6 +7,11 @@ import (
 	"github.com/robicode/device-detector/util"
 )
 
+type CachedOSVersion struct {
+	Regex   string
+	Version string
+}
+
 type CachedOS struct {
 	Regex         string
 	compileError  error
@@ -14,6 +19,7 @@ type CachedOS struct {
 	compiled      bool
 	Name          string
 	Version       string
+	Versions      []CachedOSVersion
 }
 
 type OSCache interface {

@@ -8,16 +8,16 @@ import (
 )
 
 type OSFixture struct {
-	Name      string
-	ShortName string
-	Version   string
-	Platform  string
-	Family    string
+	Name      string `yaml:"name"`
+	ShortName string `yaml:"short_name"`
+	Version   string `yaml:"version"`
+	Platform  string `yaml:"platform"`
+	Family    string `yaml:"family"`
 }
 
 type FOS struct {
-	UserAgent string `yaml:"user_agent"`
-	OS        OSFixture
+	UserAgent string    `yaml:"user_agent"`
+	OS        OSFixture `yaml:"os"`
 }
 
 func TestOSsWithFixtures(t *testing.T) {
@@ -64,7 +64,15 @@ func TestOSsWithFixtures(t *testing.T) {
 		}
 
 		if os.Family() != fixture.OS.Family {
-			t.Errorf("expected Family() to return '%s' but returned '%s'", fixture.OS.Family, os.Family())
+			t.Errorf("os: '%s': expected Family() to return '%s' but returned '%s'", os.Name(), fixture.OS.Family, os.Family())
+		}
+
+		if os.ShortName() != fixture.OS.ShortName {
+			t.Errorf("os: '%s': expected ShortName() to return '%s' but returned '%s'.", fixture.OS.Name, fixture.OS.ShortName, os.ShortName())
+		}
+
+		if os.FullVersion() != fixture.OS.Version {
+			t.Errorf("os: '%s': expected FullVersion to return '%s' but returned '%s'.", os.Name(), fixture.OS.Version, os.FullVersion())
 		}
 	}
 }

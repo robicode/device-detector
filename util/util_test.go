@@ -14,7 +14,7 @@ func TestUtil_EGSub(t *testing.T) {
 		return
 	}
 
-	if s := EGSub("$1", re, func(matched string, match int) string {
+	if s := EGSub("$1", re, func(matched string, match int, matches []string) string {
 		return "Test"
 	}); s != "Test" {
 		t.Errorf("[utils]: expected EGSub to return 'Test' but got '%s'", s)
@@ -24,7 +24,7 @@ func TestUtil_EGSub(t *testing.T) {
 
 	re = pcre.MustCompile(`[aeiou]`, 0)
 
-	if s := EGSub("hello", re, func(matched string, match int) string {
+	if s := EGSub("hello", re, func(matched string, match int, matches []string) string {
 		return "*"
 	}); s != "h*ll*" {
 		t.Errorf("[utils]: s != 'h*ll*'; s == '%s'", s)
