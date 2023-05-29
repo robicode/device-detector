@@ -1,6 +1,10 @@
 package devicedetector
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/robicode/device-detector/versionextractor"
+)
 
 type Client struct {
 	_cache     *Cache
@@ -37,6 +41,11 @@ func (c *Client) Name() string {
 }
 
 func (c *Client) FullVersion() string {
+	if c != nil {
+		if c._client != nil {
+			return versionextractor.New(c._userAgent, c._client.Regex, c._client.Version, nil).Call()
+		}
+	}
 	return ""
 }
 

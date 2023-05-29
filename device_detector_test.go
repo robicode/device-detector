@@ -20,7 +20,7 @@ func TestDeviceDetector(t *testing.T) {
 		t.Errorf("expected Name() to return 'Chrome' but got '%s'.", subject.Name())
 	}
 
-	if subject.FullVersion() != "" {
+	if subject.FullVersion() != "30.0.1599.69" {
 		t.Errorf("expected FullVersion() to return '30.0.1599.69' but returned '%s'", subject.FullVersion())
 	}
 
