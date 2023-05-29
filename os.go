@@ -1,7 +1,6 @@
 package devicedetector
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/robicode/device-detector/extractor"
@@ -191,9 +190,6 @@ var desktopOSs = []string{"AmigaOS", "IBM", "GNU/Linux", "Mac", "Unix", "Windows
 // NewOS returns a new *OS and tries to detect the OS of the given userAgent.
 func NewOS(cache *Cache, userAgent string) *OS {
 	os := cache.OS.Find(userAgent)
-	if os == nil {
-		fmt.Println("OS is nil for userAgent:", userAgent)
-	}
 
 	return &OS{
 		_cache:     cache,

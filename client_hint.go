@@ -3,7 +3,10 @@ package devicedetector
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
+
+	"github.com/robicode/device-detector/util"
 )
 
 type ClientHint struct {
@@ -16,10 +19,9 @@ type ClientHint struct {
 	_model            string
 	_platform         string
 	_platform_version string
-	_userAgent        string
 }
 
-func NewClientHint(cache *Cache, userAgent string, headers http.Header) *ClientHint {
+func NewClientHint(cache *Cache, headers http.Header) *ClientHint {
 	if headers == nil {
 		return nil
 	}
@@ -28,7 +30,6 @@ func NewClientHint(cache *Cache, userAgent string, headers http.Header) *ClientH
 	c := ClientHint{
 		_cache:            cache,
 		_headers:          headers,
-		_userAgent:        userAgent,
 		_browserList:      newBrowserList(browsers...),
 		_mobile:           headers.Get("Sec-CH-UA-Mobile"),
 		_model:            headers.Get("Sec-CH-UA-Model"),
@@ -41,7 +42,94 @@ func NewClientHint(cache *Cache, userAgent string, headers http.Header) *ClientH
 	return &c
 }
 
+func (c *ClientHint) BrowserName() string {
+	return c._browserList.Reject(func(browser hintBrowser) bool {
+		return browser.Name == "Chromium"
+	}).Last().Name
+}
+
+func (c *ClientHint) Platform() string {
+	if c == nil {
+		return ""
+	}
+	return c._platform
+}
+
+func (c *ClientHint) PlatformVersion() string {
+	return c._platform_version
+}
+
+func (c *ClientHint) Mobile() string {
+	return c._mobile
+}
+
+func (c *ClientHint) Model() string {
+	return c._model
+}
+
+// OSVersion returns the operating system version according to client hints.
+func (c *ClientHint) OSVersion() string {
+	if c == nil {
+		return ""
+	}
+	if c._platform == "Windows" {
+		return c.windowsVersion()
+	}
+	return c._platform_version
+}
+
+// OSFamily returns the operating system family according to client hints.
+func (c *ClientHint) OSFamily() string {
+	for family, members := range osFamilies {
+		if util.InStrArray(c.osShortNmae(), members) {
+			return family
+		}
+	}
+	return ""
+}
+
+// OSName returns the operating system name according to client hints.
+func (c *ClientHint) OSName() string {
+	if c.IsAndroidApp() {
+		return "Android"
+	}
+	return c.Platform()
+}
+
+// windowsVersion extracts the windows version from the *ClientHint.
+func (c *ClientHint) windowsVersion() string {
+	if c._platform_version == "" {
+		return ""
+	}
+
+	majorVersion, err := strconv.Atoi(strings.Split(c._platform_version, ".")[0])
+	if err != nil {
+		return ""
+	}
+
+	if majorVersion < 1 {
+		return ""
+	}
+
+	if majorVersion < 11 {
+		return "10"
+	} else {
+		return "11"
+	}
+}
+
+// IsAndroidApp returns if we are an android app based on client hints.
+func (c *ClientHint) IsAndroidApp() bool {
+	return util.InStrArray(c.appNameFromHeaders(), []string{"com.hisense.odinbrowser", "com.seraphic.openinet.pre",
+		"com.appssppa.idesktoppcbrowser"})
+}
+
+// Private functions
+
 func (c *ClientHint) appNameFromHeaders() string {
+	if c == nil {
+		return ""
+	}
 	if c._headers == nil {
 		return ""
 	}
@@ -120,12 +208,6 @@ func nameFromKnownBrowsers(name string) string {
 	return ""
 }
 
-func (c *ClientHint) BrowserName() string {
-	return c._browserList.Reject(func(browser hintBrowser) bool {
-		return browser.Name == "Chromium"
-	}).Last().Name
-}
-
 func (c *ClientHint) isIridium() bool {
 	if len(c._browserList.list) == 0 {
 		return false
@@ -140,4 +222,13 @@ func (c *ClientHint) isIridium() bool {
 		return false
 	})
 	return len(browsers.list) != 0
+}
+
+func (c *ClientHint) osShortNmae() string {
+	for short, long := range operatingSystems {
+		if strings.ToLower(c.OSName()) == strings.ToLower(long) {
+			return short
+		}
+	}
+	return ""
 }

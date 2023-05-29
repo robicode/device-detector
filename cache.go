@@ -1,9 +1,13 @@
 package devicedetector
 
-import "embed"
+import (
+	"embed"
+	"log"
+)
 
 type Cache struct {
 	Bot    BotCache
+	Client ClientCache
 	Device DeviceCache
 	Hint   HintCache
 	OS     OSCache
@@ -76,8 +80,15 @@ func NewEmbeddedCache() (*Cache, error) {
 		return nil, err
 	}
 
+	client, err := NewEmbeddedClientCache()
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
 	return &Cache{
 		Bot:    botCache,
+		Client: client,
 		Device: deviceCache,
 		Hint:   clientCache,
 		OS:     osCache,

@@ -131,3 +131,32 @@ func parseHints(fileList *CacheFileList) (map[string]string, error) {
 	}
 	return list, nil
 }
+
+func parseClientFile(filename string) ([]CachedClient, error) {
+	var clients []CachedClient
+
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	err = yaml.Unmarshal(data, &clients)
+	if err != nil {
+		return nil, err
+	}
+	return clients, nil
+}
+
+func parseClients(fileList *CacheFileList) ([]CachedClient, error) {
+	var clients []CachedClient
+
+	for _, filename := range fileList.filenames {
+		list, err := parseClientFile(filename)
+		if err != nil {
+			return clients, err
+		}
+		clients = append(clients, list...)
+	}
+
+	return clients, nil
+}
