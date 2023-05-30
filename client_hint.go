@@ -42,6 +42,16 @@ func NewClientHint(cache *Cache, headers http.Header) *ClientHint {
 	return &c
 }
 
+func (c *ClientHint) Brands() map[string]string {
+	output := make(map[string]string)
+
+	for _, browser := range c._hintBrowsers {
+		output[browser.Name] = browser.Version
+	}
+
+	return output
+}
+
 func (c *ClientHint) BrowserName() string {
 	return c._browserList.Reject(func(browser hintBrowser) bool {
 		return browser.Name == "Chromium"
