@@ -31,10 +31,10 @@ func NewClientHint(cache *Cache, headers http.Header) *ClientHint {
 		_cache:            cache,
 		_headers:          headers,
 		_browserList:      newBrowserList(browsers...),
-		_mobile:           headers.Get("Sec-CH-UA-Mobile"),
-		_model:            headers.Get("Sec-CH-UA-Model"),
-		_platform:         headers.Get("Sec-CH-UA-Platform"),
-		_platform_version: headers.Get("Sec-CH-UA-Platform-Version"),
+		_mobile:           getHeader(headers, "Sec-CH-UA-Mobile"),
+		_model:            getHeader(headers, "Sec-CH-UA-Model"),
+		_platform:         getHeader(headers, "Sec-CH-UA-Platform"),
+		_platform_version: getHeader(headers, "Sec-CH-UA-Platform-Version"),
 	}
 
 	c._appName = c.extractAppName()
@@ -85,7 +85,7 @@ func (c *ClientHint) OSVersion() string {
 	if c._platform == "Windows" {
 		return c.windowsVersion()
 	}
-	return c._platform_version
+	return c.PlatformVersion()
 }
 
 // OSFamily returns the operating system family according to client hints.
@@ -105,6 +105,14 @@ func (c *ClientHint) OSName() string {
 	}
 	return c.Platform()
 }
+
+// IsAndroidApp returns if we are an android app based on client hints.
+func (c *ClientHint) IsAndroidApp() bool {
+	return util.InStrArray(c.appNameFromHeaders(), []string{"com.hisense.odinbrowser", "com.seraphic.openinet.pre",
+		"com.appssppa.idesktoppcbrowser"})
+}
+
+// Private functions
 
 // windowsVersion extracts the windows version from the *ClientHint.
 func (c *ClientHint) windowsVersion() string {
@@ -127,14 +135,6 @@ func (c *ClientHint) windowsVersion() string {
 		return "11"
 	}
 }
-
-// IsAndroidApp returns if we are an android app based on client hints.
-func (c *ClientHint) IsAndroidApp() bool {
-	return util.InStrArray(c.appNameFromHeaders(), []string{"com.hisense.odinbrowser", "com.seraphic.openinet.pre",
-		"com.appssppa.idesktoppcbrowser"})
-}
-
-// Private functions
 
 func (c *ClientHint) appNameFromHeaders() string {
 	if c == nil {
@@ -164,13 +164,13 @@ func (c *ClientHint) extractAppName() string {
 }
 
 func extractBrowserList(headers http.Header) []hintBrowser {
-	if headers.Get("Sec-CH-UA") == "" {
+	if getHeader(headers, "Sec-CH-UA") == "" {
 		return nil
 	}
 
 	var hintBrowsers []hintBrowser
 
-	components := strings.Split(headers.Get("Sec-CH-UA"), ", ")
+	components := strings.Split(getHeader(headers, "Sec-CH-UA"), ", ")
 	for _, component := range components {
 		componentAndVersion := strings.Split(strings.ReplaceAll(component, "\"", ""), ";v=")
 		name := nameFromKnownBrowsers(componentAndVersion[0])
@@ -241,4 +241,13 @@ func (c *ClientHint) osShortNmae() string {
 		}
 	}
 	return ""
+}
+
+// getHeader returns the value from a normal HTTP header passed by the client or a
+// CGI-style HTTP_XXX header passed by the server.
+func getHeader(headers http.Header, name string) string {
+	if headers.Get(name) != "" {
+		return headers.Get(name)
+	}
+	return headers.Get(fmt.Sprintf("HTTP_%s", strings.ToUpper(strings.ReplaceAll(name, "-", "_"))))
 }
