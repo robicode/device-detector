@@ -1,6 +1,7 @@
 package devicedetector
 
 import (
+	"net/http"
 	"testing"
 )
 
@@ -143,5 +144,20 @@ func TestDeviceDetector(t *testing.T) {
 
 	if subject.BotName() != "Googlebot" {
 		t.Errorf("expected BotName() to be 'Googlebot' but was '%s'", subject.BotName())
+	}
+
+	// Client with ClientHints
+
+	userAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.17 Safari/537.36"
+	header := http.Header{}
+	header.Add("Sec-CH-UA", `"Chromium";v="106", "Brave";v="106", "Not;A=Brand";v="99"`)
+	subject = New(cache, userAgent, header)
+
+	if subject.Name() != "Brave" {
+		t.Errorf("expected Name() to be 'Brave' but was '%s'", subject.Name())
+	}
+
+	if subject.FullVersion() != "30.0.1599.17" {
+		t.Errorf("expected FullVersion() to be '30.0.1599.17' but was '%s'", subject.FullVersion())
 	}
 }

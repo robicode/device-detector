@@ -3,6 +3,7 @@ package devicedetector
 import (
 	"strings"
 
+	"github.com/robicode/device-detector/util"
 	"github.com/robicode/device-detector/versionextractor"
 )
 
@@ -32,19 +33,15 @@ func NewClient(cache *Cache, userAgent string) *Client {
 }
 
 func (c *Client) Name() string {
-	if c != nil {
-		if c._client != nil {
-			return c._client.Name
-		}
+	if c._client != nil {
+		return c._client.Name
 	}
 	return ""
 }
 
 func (c *Client) FullVersion() string {
-	if c != nil {
-		if c._client != nil {
-			return versionextractor.New(c._userAgent, c._client.Regex, c._client.Version, nil).Call()
-		}
+	if c._client != nil {
+		return versionextractor.New(c._userAgent, util.FixupRegex(c._client.Regex), c._client.Version, nil).Call()
 	}
 	return ""
 }

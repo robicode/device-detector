@@ -29,7 +29,7 @@ func New(cache *Cache, userAgent string, headers ...http.Header) *DeviceDetector
 		h = headers[0]
 	}
 
-	if headers != nil && len(h) != 0 {
+	if h != nil && len(h) != 0 {
 		hint = NewClientHint(cache, h)
 	}
 
@@ -101,7 +101,9 @@ func (d *DeviceDetector) Name() string {
 // FullVersion returns the client version.
 func (d *DeviceDetector) FullVersion() string {
 	if d._hint != nil {
-		return d._hint.PlatformVersion()
+		if d._hint.PlatformVersion() != "" {
+			return d._hint.PlatformVersion()
+		}
 	}
 	return d._client.FullVersion()
 }
