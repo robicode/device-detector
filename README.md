@@ -12,7 +12,7 @@ This port does not aspire to be a one-to-one copy from the original code nor the
 
 Still, our goal is to use the original, unchanged regex yaml files, in order to mutually benefit from updates and pull request to both the original and the ported versions. This is probably not the cleanest code, and could perhaps be implemented better, and I welcome all pull requests.
 
-Because Go uses the `re2` regular expression parser, I was not able to get most of the regular expressions working with the standard library. For example, regular expressions in the `device` subtree had about a ~480 success rate out of 1200+ regexes. As such, I opted to use [this pcre library wrapper](https://github.com/gijsbers/go-pcre) as a replacement.
+Because Go uses the `re2` regular expression parser, I was not able to compile most of the regular expressions with the standard library. For example, regular expressions in the `device` subtree had about a ~480 success rate out of 1200+ regexes. As such, I opted to use [this pcre library wrapper](https://github.com/gijsbers/go-pcre) as a replacement.
 
 I know some would rather not add an extra dependency to their code, instead sticking to standard library features, but I am not a regular expressions guru, and thus do not even know if it is possible to programmatically modify the regexps to conform to `re2`. 
 
