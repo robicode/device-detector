@@ -1,7 +1,6 @@
 package devicedetector
 
 import (
-	"io/ioutil"
 	"log"
 
 	"github.com/robicode/device-detector/util"
@@ -98,10 +97,10 @@ func parseOSs(fileList *CacheFileList) ([]CachedOS, error) {
 	return oss, nil
 }
 
-func parseHintsFile(filename string) (map[string]string, error) {
+func parseEmbeddedHintsFile(filename string) (map[string]string, error) {
 	output := make(map[string]string)
 
-	data, err := ioutil.ReadFile(filename)
+	data, err := embeddedData.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +116,7 @@ func parseHints(fileList *CacheFileList) (map[string]string, error) {
 	list := make(map[string]string)
 
 	for _, filename := range fileList.filenames {
-		m, err := parseHintsFile(filename)
+		m, err := parseEmbeddedHintsFile(filename)
 		if err != nil {
 			return nil, err
 		}
@@ -132,10 +131,10 @@ func parseHints(fileList *CacheFileList) (map[string]string, error) {
 	return list, nil
 }
 
-func parseClientFile(filename string) ([]CachedClient, error) {
+func parseEmbeddedClientFile(filename string) ([]CachedClient, error) {
 	var clients []CachedClient
 
-	data, err := ioutil.ReadFile(filename)
+	data, err := embeddedData.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +150,7 @@ func parseClients(fileList *CacheFileList) ([]CachedClient, error) {
 	var clients []CachedClient
 
 	for _, filename := range fileList.filenames {
-		list, err := parseClientFile(filename)
+		list, err := parseEmbeddedClientFile(filename)
 		if err != nil {
 			return clients, err
 		}
