@@ -39,6 +39,14 @@ func (c *Client) Name() string {
 	return ""
 }
 
+func (c *Client) Engine() string {
+	if c._client != nil {
+		return c._client.Engine.Default
+	}
+
+	return ""
+}
+
 func (c *Client) FullVersion() string {
 	if c._client != nil {
 		return versionextractor.New(c._userAgent, util.FixupRegex(c._client.Regex), c._client.Version, nil).Call()
