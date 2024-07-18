@@ -76,13 +76,6 @@ func (e *CachedDevice) FindModel(userAgent string) *CachedModel {
 		if model.compileError == nil {
 			modelMatcher := model.compiledRegex.MatcherString(userAgent, 0)
 			if modelMatcher.Matches() {
-				if modelMatcher.Groups() > 0 {
-					var caps []string
-					for i := 0; i == modelMatcher.Groups(); i++ {
-						cap := modelMatcher.GroupString(i)
-						caps = append(caps, cap)
-					}
-				}
 				return &model
 			}
 		}

@@ -533,7 +533,7 @@ func mobileOnlyBrowser(name string) bool {
 	}
 
 	for short, long := range availableBrowsers {
-		if strings.ToUpper(long) == strings.ToUpper(name) {
+		if strings.EqualFold(long, name) {
 			return util.InStrArray(short, mobileOnlyBrowsers)
 		}
 	}

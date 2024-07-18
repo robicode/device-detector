@@ -21,7 +21,7 @@ func NewCacheFileList(baseList ...string) *CacheFileList {
 	var files []string
 	var originalFiles []string
 
-	if baseList == nil || len(baseList) == 0 {
+	if len(baseList) == 0 {
 		for _, file := range cacheFiles {
 			if strings.HasPrefix(file, "regexes/") {
 				files = append(files, file)

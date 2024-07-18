@@ -29,7 +29,7 @@ func New(cache *Cache, userAgent string, headers ...http.Header) *DeviceDetector
 		h = headers[0]
 	}
 
-	if h != nil && len(h) != 0 {
+	if len(h) != 0 {
 		hint = NewClientHint(cache, h)
 	}
 

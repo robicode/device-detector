@@ -218,7 +218,7 @@ func nameFromKnownBrowsers(name string) string {
 	return ""
 }
 
-func (c *ClientHint) isIridium() bool {
+func (c *ClientHint) IsIridium() bool {
 	if len(c._browserList.list) == 0 {
 		return false
 	}
@@ -236,7 +236,7 @@ func (c *ClientHint) isIridium() bool {
 
 func (c *ClientHint) osShortNmae() string {
 	for short, long := range operatingSystems {
-		if strings.ToLower(c.OSName()) == strings.ToLower(long) {
+		if strings.EqualFold(c.OSName(), long) {
 			return short
 		}
 	}

@@ -1,7 +1,7 @@
 package devicedetector
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"gopkg.in/yaml.v3"
@@ -34,7 +34,7 @@ func TestBotWithFixtures(t *testing.T) {
 		return
 	}
 
-	data, err := ioutil.ReadFile("fixtures/bots.yml")
+	data, err := os.ReadFile("fixtures/bots.yml")
 	if err != nil {
 		t.Error("error loading bot fixtures:", err)
 		t.Fail()

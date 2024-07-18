@@ -205,7 +205,7 @@ func (o *OS) Short() string {
 	}
 
 	for short, long := range operatingSystems {
-		if strings.ToLower(o.Name()) == strings.ToLower(long) {
+		if strings.EqualFold(o.Name(), long) {
 			return short
 		}
 	}
